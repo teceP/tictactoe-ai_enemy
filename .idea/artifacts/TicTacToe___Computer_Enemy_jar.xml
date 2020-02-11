@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="TicTacToe - Computer Enemy:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/TicTacToe___Computer_Enemy_jar</output-path>
+    <root id="archive" name="TicTacToe - Computer Enemy.jar">
+      <element id="module-output" name="TicTacToe - Computer Enemy" />
+    </root>
+  </artifact>
+</component>
