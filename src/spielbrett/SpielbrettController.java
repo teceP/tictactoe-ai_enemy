@@ -1,5 +1,6 @@
 package spielbrett;
 
+import algs.AlphaBetaPruning;
 import feld.Feld;
 import spieler.*;
 
@@ -61,7 +62,6 @@ public class SpielbrettController {
                         if (this.verifiziereZug(zug)) {
                             this.zugSetzen(zug, mensch.getSign());
                             this.anzahlZuege++;
-
                         } else {
                             writer.write("Dieses Feld ist bereits besetzt!\nNeue Eingabe:\n=> ");
                             writer.flush();
@@ -73,22 +73,34 @@ public class SpielbrettController {
                 e.printStackTrace();
             }
         } else {
+
+            /*
             zug = this.computer.naechstesFeld(this.spielbrett);
 
             while(!this.verifiziereZug(zug)){
                 zug = this.computer.naechstesFeld(this.spielbrett);
             }
 
+            this.zugSetzen(zug, computer.getSign());*/
+
+            zug = AlphaBetaPruning.run(this, 'O', Double.POSITIVE_INFINITY);
+
             this.zugSetzen(zug, computer.getSign());
             this.anzahlZuege++;
         }
 
         if(!this.pruefeGewinner()){
-            this.menschAmZug = !menschAmZug;
+
+            if(menschAmZug){
+                menschAmZug = false;
+            }else{
+                menschAmZug = true;
+            }
+
             return false;
         }
-        return true;
 
+        return true;
     }
 
     public void zugSetzen(Feld zug, char sign) {
@@ -184,7 +196,7 @@ public class SpielbrettController {
     public void spielZuende(char gewinner) {
         try {
             if (gewinner != 'z') {
-                this.writer.write("========================");
+                this.writer.write("========================\n");
                 this.writer.write("-> " + gewinner + " hat gewonnen! <-\n");
             } else {
                 this.writer.write("Unentschieden!\n");
@@ -236,4 +248,19 @@ public class SpielbrettController {
             e.printStackTrace();
         }
     }
+    public Spielbrett getSpielbrett(){
+        return this.spielbrett;
+    }
+
+    public char getSpielerAmZug(){
+        if(menschAmZug){
+            return 'X';
+        }else{
+            return 'O';
+        }
+    }
+    public void setSpielbrett(Spielbrett spielbrett){
+        this.spielbrett = spielbrett;
+    }
+
 }

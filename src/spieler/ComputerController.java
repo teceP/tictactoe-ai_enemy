@@ -1,7 +1,9 @@
 package spieler;
 
+import algs.Minimax;
 import feld.Feld;
 import spielbrett.Spielbrett;
+import spielbrett.SpielbrettController;
 
 public class ComputerController{
     private Computer computer;
@@ -9,6 +11,7 @@ public class ComputerController{
     public ComputerController(){
         this.computer = new Computer();
     }
+
 
     public Feld naechstesFeld(Spielbrett spielbrett) {
 

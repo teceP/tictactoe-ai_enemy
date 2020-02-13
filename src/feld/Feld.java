@@ -1,6 +1,8 @@
 package feld;
 
-public class Feld {
+import java.io.*;
+
+public class Feld implements Serializable {
     private int zeile;
     private int spalte;
     private char sign;
@@ -9,9 +11,10 @@ public class Feld {
         this.sign = ' ';
     }
 
-    public Feld(int spalte, int zeile){
+    public Feld(int spalte, int zeile) {
         this.spalte = spalte;
         this.zeile = zeile;
+        this.sign = ' ';
     }
 
     public Feld(char spalte, char zeile) {
@@ -68,4 +71,5 @@ public class Feld {
     public void setSign(char sign) {
         this.sign = sign;
     }
+
 }
