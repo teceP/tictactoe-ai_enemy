@@ -1,14 +1,13 @@
 package spieler;
 
-import feld.Feld;
-import spielbrett.Spielbrett;
-
 public class Mensch extends Spieler  {
 
-    public Mensch() {
+    public Mensch() {}
 
-    }
-
+    /**
+     * Gibt das Zeichen des Menschen wieder ('X')
+     * @return
+     */
     @Override
     public char getSign() {
         return 'X';

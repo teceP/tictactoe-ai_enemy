@@ -4,12 +4,18 @@ import spielbrett.SpielbrettController;
 
 public class Spiel {
 
+    /**
+     * Spielbrettcontroller
+     */
     private SpielbrettController spielbrettController;
 
     public Spiel(){
         spielbrettController = new SpielbrettController();
     }
 
+    /**
+     * Ruft so oft naechsterZug() auf, bis jemand gewonnen hat oder unentschieden.
+     */
     public void starteSpiel(){
         System.out.println("-----------------------------------------");
         System.out.println("TicTacToe - Mario Teklic - Programmfabrik");
@@ -25,6 +31,8 @@ public class Spiel {
         while(!spielbrettController.naechsterZug()){
             spielbrettController.spielbrettZeichnen();
         }
+
+        System.out.println("\n---------- Spiel vorbei ---------\n");
 
     }
 }

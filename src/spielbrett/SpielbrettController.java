@@ -1,29 +1,35 @@
 package spielbrett;
 
-import algs.AlphaBetaPruning;
 import feld.Feld;
 import spieler.*;
-
 import java.io.*;
 import java.util.Random;
 
 public class SpielbrettController {
+
     /**
-     *
+     * Spielbrettmodel
      */
     private Spielbrett spielbrett;
 
     /**
-     *
+     * Konsolenwriter
      */
     private BufferedWriter writer;
 
     /**
-     *
+     * Controller des Menschen
      */
     private MenschController mensch;
+
+    /**
+     * Controller des Computers
+     */
     private ComputerController computer;
 
+    /**
+     * Anzahl der Zuege
+     */
     private int anzahlZuege;
 
     /**
@@ -32,6 +38,9 @@ public class SpielbrettController {
      */
     private boolean menschAmZug;
 
+    /**
+     * SpielbrettController-Konstruktor
+     */
     public SpielbrettController() {
         this.spielbrett = new Spielbrett();
         this.writer = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -44,7 +53,11 @@ public class SpielbrettController {
         this.anzahlZuege = 0;
     }
 
-
+    /**
+     * Ruft die naechstesFeld()-Methode des jeweiligen Spielers auf.
+     *
+     * @return False = Spiel ist noch nicht vorbei.
+     */
     public boolean naechsterZug() {
         Feld zug = null;
 
@@ -61,7 +74,6 @@ public class SpielbrettController {
                     } else {
                         if (this.verifiziereZug(zug)) {
                             this.zugSetzen(zug, mensch.getSign());
-                            this.anzahlZuege++;
                         } else {
                             writer.write("Dieses Feld ist bereits besetzt!\nNeue Eingabe:\n=> ");
                             writer.flush();
@@ -74,45 +86,61 @@ public class SpielbrettController {
             }
         } else {
 
-            /*
-            zug = this.computer.naechstesFeld(this.spielbrett);
+            zug = computer.naechstesFeld(this);
 
-            while(!this.verifiziereZug(zug)){
-                zug = this.computer.naechstesFeld(this.spielbrett);
-            }
-
-            this.zugSetzen(zug, computer.getSign());*/
-
-            zug = AlphaBetaPruning.run(this, 'O', Double.POSITIVE_INFINITY);
-
+            //durch Minimax Algorithmus wird diese Variable zeitweise geaendert: wieder Zuruecksetzen
+            this.menschAmZug = false;
             this.zugSetzen(zug, computer.getSign());
-            this.anzahlZuege++;
         }
 
-        if(!this.pruefeGewinner()){
-
-            if(menschAmZug){
-                menschAmZug = false;
-            }else{
-                menschAmZug = true;
-            }
-
-            return false;
-        }
-
-        return true;
-    }
-
-    public void zugSetzen(Feld zug, char sign) {
-        this.spielbrett.setSign(zug.getSpalte(), zug.getZeile(), sign);
-    }
-
-    public boolean verifiziereZug(Feld zug) {
+        char status = this.pruefeGewinner();
 
         /**
-         * Pruefe ob Feld bereits belegt
+         * n = zu wenig zuege
+         * z = unentschieden
+         * X = X gewonnen
+         * O = O gewonnen
          *
          */
+
+        if (status == 'n') {
+            this.naechsterSpieler();
+            return false;
+        } else {
+            this.spielZuende(status);
+            return true;
+        }
+    }
+
+    /**
+     * Aendert die Variable, jeweils zum naechsten Spieler
+     */
+    public void naechsterSpieler() {
+        if (menschAmZug) {
+            this.menschAmZug = false;
+        } else {
+            this.menschAmZug = true;
+        }
+    }
+
+    /**
+     * Setzt einen Zug auf das Feld und erhört die Anzahl der Spielzuege
+     *
+     * @param zug  der Zug
+     * @param sign das Zeichen, mit dem das Feld besetzt wird
+     */
+    public void zugSetzen(Feld zug, char sign) {
+        this.spielbrett.setSign(zug.getSpalte(), zug.getZeile(), sign);
+        this.anzahlZuege++;
+    }
+
+    /**
+     * Prueft, ob auf dem Feld ein weiterer Zug moeglich ist
+     *
+     * @param zug der Zug
+     * @return false, wenn Feld bereits belegt.
+     */
+    public boolean verifiziereZug(Feld zug) {
 
         if (this.spielbrett.getFeld(zug.getSpalte(), zug.getZeile()).getSign() != ' ') {
             return false;
@@ -122,17 +150,17 @@ public class SpielbrettController {
     }
 
     /**
-     * Prueft ob der Spieler, der zur Zeit am Zug ist gewonnen hat
+     * Prueft ob der Spieler, der zur Zeit am Zug ist, gewonnen hat
      *
      * @return true falls gewonnen
      */
-    public boolean pruefeGewinner() {
+    public char pruefeGewinner() {
 
         /**
          * Es kann noch keinen Gewinner geben
          */
-        if(anzahlZuege < 5){
-            return false;
+        if (anzahlZuege < 5) {
+            return 'n';
         }
 
         char signAmZug;
@@ -150,7 +178,7 @@ public class SpielbrettController {
                     && spielbrett.getFeld(c, 1).getSign() == signAmZug
                     && spielbrett.getFeld(c, 2).getSign() == signAmZug) {
                 this.spielZuende(signAmZug);
-                return true;
+                return signAmZug;
             }
 
             //Spalte
@@ -158,7 +186,7 @@ public class SpielbrettController {
                     && spielbrett.getFeld(1, c).getSign() == signAmZug
                     && spielbrett.getFeld(2, c).getSign() == signAmZug) {
                 this.spielZuende(signAmZug);
-                return true;
+                return signAmZug;
             }
         }
 
@@ -169,7 +197,7 @@ public class SpielbrettController {
                 && spielbrett.getFeld(1, 1).getSign() == signAmZug
                 && spielbrett.getFeld(2, 2).getSign() == signAmZug) {
             this.spielZuende(signAmZug);
-            return true;
+            return signAmZug;
         }
 
         /**
@@ -179,7 +207,7 @@ public class SpielbrettController {
                 && spielbrett.getFeld(1, 1).getSign() == signAmZug
                 && spielbrett.getFeld(2, 0).getSign() == signAmZug) {
             this.spielZuende(signAmZug);
-            return true;
+            return signAmZug;
         }
 
         /**
@@ -187,12 +215,17 @@ public class SpielbrettController {
          */
         if (this.anzahlZuege == 9) {
             this.spielZuende('z');
-            return true;
+            return 'z';
         }
 
-        return false;
+        return 'n';
     }
 
+    /**
+     * Gibt den Gewinner aus und beendet das Spiel.
+     *
+     * @param gewinner der Gewinner. Falls gewinner == 'z', dann unentschieden.
+     */
     public void spielZuende(char gewinner) {
         try {
             if (gewinner != 'z') {
@@ -204,7 +237,6 @@ public class SpielbrettController {
 
             this.writer.flush();
             this.spielbrettZeichnen();
-            System.exit(1);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -213,7 +245,7 @@ public class SpielbrettController {
     /**
      * Wuerfelt zufaellig aus, wer beginnt.
      *
-     * @return True = Mensch faengt an
+     * @return Flase = Computer faengt an
      */
     public boolean anfaengerWaehlen() {
         Random rand = new Random();
@@ -226,6 +258,9 @@ public class SpielbrettController {
         }
     }
 
+    /**
+     * Zeichnet das momentante Spielbrett in die Konsole.
+     */
     public void spielbrettZeichnen() {
         int buchstabeZeile = 65;
 
@@ -248,19 +283,31 @@ public class SpielbrettController {
             e.printStackTrace();
         }
     }
-    public Spielbrett getSpielbrett(){
+
+    /**
+     * Gibt das Spielbrett zurueck.
+     */
+    public Spielbrett getSpielbrett() {
         return this.spielbrett;
     }
 
-    public char getSpielerAmZug(){
-        if(menschAmZug){
+    /**
+     * Gibt den Spieler zurueck, der zur Zeit am Zug ist.
+     */
+    public char getSpielerAmZug() {
+        if (menschAmZug) {
             return 'X';
-        }else{
+        } else {
             return 'O';
         }
     }
-    public void setSpielbrett(Spielbrett spielbrett){
-        this.spielbrett = spielbrett;
-    }
 
+    /**
+     * Setzt die Anzahl der Spielzuege
+     *
+     * @param anzahl
+     */
+    public void setAnzahlZuege(int anzahl) {
+        this.anzahlZuege = anzahl;
+    }
 }

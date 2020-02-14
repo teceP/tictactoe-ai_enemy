@@ -6,12 +6,24 @@ import java.io.*;
 
 public class Spielbrett implements Serializable{
 
+    /**
+     * Alle Spielfelder des Spielbretts
+     */
     private Feld[][] spielfelder;
 
-    String delimeter = "~";
-    String delimeterAttribut = "#";
+    /**
+     * Felddelimeter (fuer deepcopy)
+     */
+    private String delimeter = "~";
 
+    /**
+     * Attributedelimeter (fuer deepcopy)
+     */
+    private String delimeterAttribut = "#";
 
+    /**
+     * Spielbrett-konstruktor
+     */
     public Spielbrett(){
 
         this.spielfelder = new Feld[3][3];
@@ -23,27 +35,46 @@ public class Spielbrett implements Serializable{
         }
     }
 
-    public Spielbrett(Spielbrett spielbrett){
-        this.spielfelder = spielbrett.getSpielfeld();
-    }
-
+    /**
+     * Spielbrett-konstruktor, um ein Spielbrett zuerzeugen, mit Spielfeldern eines anderes Spielbrettes
+     * @param spielfelder
+     */
     public Spielbrett(Feld[][] spielfelder){
         this.spielfelder = spielfelder;
     }
 
-
+    /**
+     * Gibt ein Feld zurueck
+     * @param spalte Spalte
+     * @param zeile Zeile
+     * @return das Feld
+     */
     public Feld getFeld(int spalte, int zeile){
         return this.spielfelder[spalte][zeile];
     }
 
+    /**
+     * Setzt ein Zeichen auf ein Feld
+     * @param spalte Spalte
+     * @param zeile Zeile
+     * @param sign Zeichnen
+     */
     public void setSign(int spalte, int zeile, char sign){
         this.spielfelder[spalte][zeile].setSign(sign);
     }
 
+    /**
+     * Gibt die Spielfelder zurueck
+     * @return die Spielfelder
+     */
     public Feld[][] getSpielfeld(){
         return this.spielfelder;
     }
 
+    /**
+     * Konvertiert alle Spielfelder zu einem String (fuer deepcopy)
+     * @return alle Spielfelder als String
+     */
     public String spielfelderToString(){
         StringBuilder sb = new StringBuilder();
 
@@ -58,11 +89,14 @@ public class Spielbrett implements Serializable{
 
             }
         }
-
         return sb.toString();
-
     }
 
+    /**
+     * Stellt alle Spielfelder aus einem String wiederher
+     * @param s alle Spielfelder als String
+     * @return alle Spielfelder als Feld-Variablen
+     */
     public Feld[][] restoreFelder(String s){
         Feld[][] restored = new Feld[3][3];
         String[] felder = s.split(delimeter);
@@ -79,11 +113,15 @@ public class Spielbrett implements Serializable{
                 counter++;
             }
         }
-
         return restored;
-
     }
 
+    /**
+     * Deepcopyverfahren fuer ein Spielbrett.
+     * Es ist moeglich dieses Verfahren zu nehmen und immer ein neues Spielbrett zuerstellen,
+     * welches komplett unabhaengig vom Ursprungsspielbrett ist.
+     * @return Neues Spielbrett mit den gleichen besetzten Feldern des Ursprungsspielbretts.
+     */
     public Spielbrett deepCopy(){
 
         try {
@@ -105,21 +143,13 @@ public class Spielbrett implements Serializable{
                     return new Spielbrett(restoreFelder(spielfelderString));
                 }
             }
-
-
-
         } catch (IOException e) {
             System.out.println("IO ex");
-
             e.printStackTrace();
         } catch (ClassNotFoundException e) {
             System.out.println("Classnotfound ex");
-
             e.printStackTrace();
         }
-
-        System.out.println("fehler");
     return null;
     }
-
 }
