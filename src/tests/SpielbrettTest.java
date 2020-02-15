@@ -1,5 +1,6 @@
 package tests;
 
+import feld.Feld;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import spielbrett.Spielbrett;
@@ -14,6 +15,54 @@ public class SpielbrettTest {
         spielbrett.setSign(2,2, 'O');
 
         return spielbrett;
+    }
+
+    @Test
+    public void spielfelderToString_unbesetzt_deepcopy_test(){
+        Spielbrett spielbrett = new Spielbrett();
+
+        String ist = spielbrett.spielfelderToString();
+        String soll = "0#0# ~0#1# ~0#2# ~1#0# ~1#1# ~1#2# ~2#0# ~2#1# ~2#2# ~";
+
+        Assertions.assertEquals(soll, ist);
+    }
+
+    @Test
+    public void spielfelderToString_besetzt_deepcopy_test(){
+        Spielbrett spielbrett = getSpielbrett();
+
+        String ist = spielbrett.spielfelderToString();
+        String soll = "0#0#O~0#1# ~0#2# ~1#0# ~1#1#O~1#2# ~2#0# ~2#1# ~2#2#O~";
+
+        Assertions.assertEquals(soll, ist);
+    }
+
+    @Test
+    public void stringToFelder_unbesetzt_deepcopy_test(){
+        Spielbrett spielbrett = new Spielbrett();
+
+        String content = spielbrett.spielfelderToString();
+        Feld[][] restored = spielbrett.restoreFelder(content);
+
+        for(int i = 0; i < 3; i++){
+            for(int x = 0; x < 3; x++){
+                Assertions.assertEquals(spielbrett.getFeld(i,x).getSign(), restored[i][x].getSign());
+            }
+        }
+    }
+
+    @Test
+    public void stringToFelder_besetzt_deepcopy_test(){
+        Spielbrett spielbrett = getSpielbrett();
+
+        String content = spielbrett.spielfelderToString();
+        Feld[][] restored = spielbrett.restoreFelder(content);
+
+        for(int i = 0; i < 3; i++){
+            for(int x = 0; x < 3; x++){
+                Assertions.assertEquals(spielbrett.getFeld(i,x).getSign(), restored[i][x].getSign());
+            }
+        }
     }
 
     @Test

@@ -156,13 +156,6 @@ public class SpielbrettController {
      */
     public char pruefeGewinner() {
 
-        /**
-         * Es kann noch keinen Gewinner geben
-         */
-        if (anzahlZuege < 5) {
-            return 'n';
-        }
-
         char signAmZug;
 
         if (menschAmZug) {
@@ -296,7 +289,7 @@ public class SpielbrettController {
      */
     public char getSpielerAmZug() {
         if (menschAmZug) {
-            return 'X';
+            return mensch.getSign();
         } else {
             return 'O';
         }
@@ -309,5 +302,12 @@ public class SpielbrettController {
      */
     public void setAnzahlZuege(int anzahl) {
         this.anzahlZuege = anzahl;
+    }
+
+    /**
+     * Gibt die Anzahl der Zuege zurueck
+     */
+    public int getAnzahlZuege(){
+        return this.anzahlZuege;
     }
 }

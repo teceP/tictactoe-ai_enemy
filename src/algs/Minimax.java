@@ -6,6 +6,9 @@ import spielbrett.SpielbrettController;
 public class Minimax {
 
 
+    /**
+     * Nicht instanziierbar
+     */
     private Minimax() {
     }
 
@@ -31,7 +34,6 @@ public class Minimax {
                 }
             }
         }
-
         return zug;
     }
 
@@ -46,8 +48,6 @@ public class Minimax {
 
         Integer s = score(spielbrettController);
 
-         System.out.println("current depth: " + depth + "\nscore: " + s);
-         spielbrettController.spielbrettZeichnen();
 
         //Gebe ggf. Bewertung zurueck
         if (s != null) {
@@ -59,7 +59,7 @@ public class Minimax {
                 return 0;
             }
 
-        } else if(depth == 9) {
+        } else if (depth == 9) {
             return 0;
         }
 
@@ -99,58 +99,58 @@ public class Minimax {
     /**
      * Bewertet das Spielbrett mit dem naechsten Spielzug
      *
-     * @return 10: Spiel gewonnen
-     * @return 0: mit diesem Zug endet das Spiel mit einem Unentschieden
-     * @return -10: Spiel verloren
      * @return null: Spiel noch nicht vorbei
      */
     private static Integer score(SpielbrettController spielbrettController) {
-        int rueckgabe;
-        char signAmZug = spielbrettController.getSpielerAmZug();
 
-        if (signAmZug == 'O') {
+        int rueckgabe = -10;
+        char signAmZug = 'X';
+
+
+        for (int i = 0; i < 2; i++) {
+
+            for (int c = 0; c < spielbrettController.getSpielbrett().getSpielfeld().length; c++) {
+
+                //Zeile
+                if (spielbrettController.getSpielbrett().getFeld(c, 0).getSign() == signAmZug
+                        && spielbrettController.getSpielbrett().getFeld(c, 1).getSign() == signAmZug
+                        && spielbrettController.getSpielbrett().getFeld(c, 2).getSign() == signAmZug) {
+                    return rueckgabe;
+                }
+
+                //Spalte
+                if (spielbrettController.getSpielbrett().getFeld(0, c).getSign() == signAmZug
+                        && spielbrettController.getSpielbrett().getFeld(1, c).getSign() == signAmZug
+                        && spielbrettController.getSpielbrett().getFeld(2, c).getSign() == signAmZug) {
+                    return rueckgabe;
+                }
+            }
+
+            /**
+             * Diagonal 1
+             */
+            if (spielbrettController.getSpielbrett().getFeld(0, 0).getSign() == signAmZug
+                    && spielbrettController.getSpielbrett().getFeld(1, 1).getSign() == signAmZug
+                    && spielbrettController.getSpielbrett().getFeld(2, 2).getSign() == signAmZug) {
+                return rueckgabe;
+            }
+
+            /**
+             * Diagonal 2
+             */
+            if (spielbrettController.getSpielbrett().getFeld(0, 2).getSign() == signAmZug
+                    && spielbrettController.getSpielbrett().getFeld(1, 1).getSign() == signAmZug
+                    && spielbrettController.getSpielbrett().getFeld(2, 0).getSign() == signAmZug) {
+                return rueckgabe;
+            }
+
+
             rueckgabe = 10;
-        } else {
-            rueckgabe = -10;
-        }
-
-        for (int c = 0; c < spielbrettController.getSpielbrett().getSpielfeld().length; c++) {
-
-            //Zeile
-            if (spielbrettController.getSpielbrett().getFeld(c, 0).getSign() == signAmZug
-                    && spielbrettController.getSpielbrett().getFeld(c, 1).getSign() == signAmZug
-                    && spielbrettController.getSpielbrett().getFeld(c, 2).getSign() == signAmZug) {
-                return rueckgabe;
-            }
-
-            //Spalte
-            if (spielbrettController.getSpielbrett().getFeld(0, c).getSign() == signAmZug
-                    && spielbrettController.getSpielbrett().getFeld(1, c).getSign() == signAmZug
-                    && spielbrettController.getSpielbrett().getFeld(2, c).getSign() == signAmZug) {
-                return rueckgabe;
-            }
+            signAmZug = 'O';
         }
 
         /**
-         * Diagonal 1
-         */
-        if (spielbrettController.getSpielbrett().getFeld(0, 0).getSign() == signAmZug
-                && spielbrettController.getSpielbrett().getFeld(1, 1).getSign() == signAmZug
-                && spielbrettController.getSpielbrett().getFeld(2, 2).getSign() == signAmZug) {
-            return rueckgabe;
-        }
-
-        /**
-         * Diagonal 2
-         */
-        if (spielbrettController.getSpielbrett().getFeld(0, 2).getSign() == signAmZug
-                && spielbrettController.getSpielbrett().getFeld(1, 1).getSign() == signAmZug
-                && spielbrettController.getSpielbrett().getFeld(2, 0).getSign() == signAmZug) {
-            return rueckgabe;
-        }
-
-        /**
-         * Mit diesem letzten Zug, endet das Spiel mit einem Unentschieden
+         * Pruefe, ob unentschieden
          */
         boolean unentschieden = true;
         for (int spalte = 0; spalte < 3; spalte++) {

@@ -11,8 +11,6 @@ public class SpielbrettControllerTest {
         return new SpielbrettController();
     }
 
-
-
     @Test
     public void verifiziereZugTest_sollteFalseSein_weil_FelderBelegt(){
         SpielbrettController controller = getSpielbrettController();
@@ -67,8 +65,6 @@ public class SpielbrettControllerTest {
 
         //pruefeGewinner wird erst ausgefuehrt, wenn mehr als 4 Zuege gemacht wurden, weil vorher kann es keinen Gewinner geben
         controller.setAnzahlZuege(5);
-
-
 
         Assertions.assertTrue(controller.pruefeGewinner() == controller.getSpielerAmZug());
     }
@@ -286,13 +282,14 @@ public class SpielbrettControllerTest {
         controller.zugSetzen(new Feld(2,2), controller.getSpielerAmZug());
 
         //pruefeGewinner wird erst ausgefuehrt, wenn mehr als 4 Zuege gemacht wurden, weil vorher kann es keinen Gewinner geben
-        controller.setAnzahlZuege(5);
+        controller.setAnzahlZuege(3);
 
         //O (Computer) setzt Spielzug und muss den Gewinnerzug des Menschen blockieren
         //In diesem Szenario: 1,1
         controller.naechsterSpieler();
 
-        //naechsterZug() gibt false zurueck, wenn Spiel nicht zuende
+        //System.out.print(controller.getSpielbrett().getFeld(1,1).getSign() + " <- sollte gesetzt sein ");
+
         Assertions.assertFalse(controller.naechsterZug());
 
         controller.spielbrettZeichnen();
@@ -653,6 +650,68 @@ public class SpielbrettControllerTest {
         Assertions.assertEquals('O', controller.getSpielbrett().getFeld(2,2).getSign());
 
         System.out.println("pruefeZug_computerBlockiertMenschen_11");
+        controller.spielbrettZeichnen();
+    }
+
+    @Test
+    public void pruefeZug_unentschieden_11(){
+        SpielbrettController controller = getSpielbrettController();
+
+        /**
+         * o o x
+         * x x o
+         * o x o
+         *
+         */
+
+        controller.zugSetzen(new Feld(0,0), 'O');
+        controller.zugSetzen(new Feld(0,1), 'O');
+        controller.zugSetzen(new Feld(0,2), 'X');
+        controller.zugSetzen(new Feld(1,0), 'X');
+        controller.zugSetzen(new Feld(1,1), 'X');
+        controller.zugSetzen(new Feld(1,2), 'O');
+        controller.zugSetzen(new Feld(2,0), 'O');
+        controller.zugSetzen(new Feld(2,1), 'X');
+        controller.zugSetzen(new Feld(2,2), 'O');
+
+        //pruefeGewinner wird erst ausgefuehrt, wenn mehr als 4 Zuege gemacht wurden, weil vorher kann es keinen Gewinner geben
+        controller.setAnzahlZuege(9);
+
+        //naechsterZug() gibt false zurueck, wenn Spiel nicht zuende
+        Assertions.assertEquals('z', controller.pruefeGewinner());
+
+        System.out.println("pruefeZug_unentschieden_11");
+        controller.spielbrettZeichnen();
+    }
+
+    @Test
+    public void pruefeZug_unentschieden_12(){
+        SpielbrettController controller = getSpielbrettController();
+
+        /**
+         * x o o
+         * o x x
+         * x o o
+         *
+         */
+
+        controller.zugSetzen(new Feld(0,0), 'X');
+        controller.zugSetzen(new Feld(0,1), 'O');
+        controller.zugSetzen(new Feld(0,2), 'O');
+        controller.zugSetzen(new Feld(1,0), 'O');
+        controller.zugSetzen(new Feld(1,1), 'X');
+        controller.zugSetzen(new Feld(1,2), 'X');
+        controller.zugSetzen(new Feld(2,0), 'X');
+        controller.zugSetzen(new Feld(2,1), 'O');
+        controller.zugSetzen(new Feld(2,2), 'O');
+
+        //pruefeGewinner wird erst ausgefuehrt, wenn mehr als 4 Zuege gemacht wurden, weil vorher kann es keinen Gewinner geben
+        controller.setAnzahlZuege(9);
+
+        //naechsterZug() gibt false zurueck, wenn Spiel nicht zuende
+        Assertions.assertEquals('z', controller.pruefeGewinner());
+
+        System.out.println("pruefeZug_unentschieden_11");
         controller.spielbrettZeichnen();
     }
 }
