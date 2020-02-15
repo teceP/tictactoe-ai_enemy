@@ -216,7 +216,6 @@ public class SpielbrettControllerTest {
         controller.zugSetzen(new Feld(2,0), controller.getSpielerAmZug());
         controller.zugSetzen(new Feld(1,1), controller.getSpielerAmZug());
         controller.zugSetzen(new Feld(0,2), controller.getSpielerAmZug());
-        System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
         controller.spielbrettZeichnen();
 
         //pruefeGewinner wird erst ausgefuehrt, wenn mehr als 4 Zuege gemacht wurden, weil vorher kann es keinen Gewinner geben
